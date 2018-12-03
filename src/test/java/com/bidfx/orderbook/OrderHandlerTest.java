@@ -22,10 +22,10 @@ class OrderHandlerTest {
     void setUp() {
         orderHandler = new OrderHandler();
     }
-    
+
     @AfterEach
-    void cleanUp(){
-    	orderHandler = null;
+    void cleanUp() {
+        orderHandler = null;
     }
 
     @Test
@@ -133,29 +133,28 @@ class OrderHandlerTest {
         expected.put(PriceFields.BID_SIZE2, 100L);
         assertEquals(expected, changedLevels);
     }
-    
-    @Test 
+
+    @Test
     @DisplayName("Removing non-last with same price")
-    void testEight()
-    {
-    	 Order order1 = new Order("1", 729.0, 100, Side.BID);
-         Order order2 = new Order("2", 729.0, 50, Side.BID);
-         Order order3 = new Order("3", 729.2, 25, Side.BID);
-         Order order4 = new Order("4", 728.1, 30, Side.BID);
-         Order order3delete = new Order("2", 729.0, 0, Side.BID);
-         
-         orderHandler.handleOrder(order1);
-         orderHandler.handleOrder(order2);
-         orderHandler.handleOrder(order3);
-         orderHandler.handleOrder(order4);
-         Map<String, Object> changedLevels = orderHandler.handleOrder(order3delete);
-         Map<String, Object> expected = new TreeMap<>();
-         
-         expected.put(PriceFields.BID_SIZE2, 100L);
-         expected.put(PriceFields.BID3, 728.1);
-         expected.put(PriceFields.BID_SIZE3, 30L);
-         
-         assertEquals(expected, changedLevels);
+    void testEight() {
+        Order order1 = new Order("1", 729.0, 100, Side.BID);
+        Order order2 = new Order("2", 729.0, 50, Side.BID);
+        Order order3 = new Order("3", 729.2, 25, Side.BID);
+        Order order4 = new Order("4", 728.1, 30, Side.BID);
+        Order order3delete = new Order("2", 729.0, 0, Side.BID);
+
+        orderHandler.handleOrder(order1);
+        orderHandler.handleOrder(order2);
+        orderHandler.handleOrder(order3);
+        orderHandler.handleOrder(order4);
+        Map<String, Object> changedLevels = orderHandler.handleOrder(order3delete);
+        Map<String, Object> expected = new TreeMap<>();
+
+        expected.put(PriceFields.BID_SIZE2, 100L);
+        expected.put(PriceFields.BID3, 728.1);
+        expected.put(PriceFields.BID_SIZE3, 30L);
+
+        assertEquals(expected, changedLevels);
     }
-    
+
 }
