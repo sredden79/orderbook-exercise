@@ -149,7 +149,8 @@ public class OrderBook {
     }
 
     /**
-     * Return the delta (the changes)
+     * Returns the delta (of the changes) or
+     * null if no orders have been entered at the time the function has been called
      * 
      * @return The updated delta variable
      */
