@@ -4,6 +4,7 @@
 
 package com.bidfx.orderbook;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /** 
@@ -27,8 +28,16 @@ public class OrderHandler {
     	else{
     		orderBook.add(order);
     	}
+
+    	updateOrderBook(order);
     	
         return publishChangedLevels();
+    }
+
+    private synchronized void updateOrderBook(Order order) {
+
+
+
     }
 
     private Map<String, Object> publishChangedLevels() {
