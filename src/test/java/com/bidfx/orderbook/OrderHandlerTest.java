@@ -5,10 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 /**
  * Unit test for {@link OrderHandler} class.
@@ -66,6 +63,7 @@ class OrderHandlerTest {
         expected.put(PriceFields.BID_SIZE2, 50L);
         assertEquals(expected, changedLevels);
     }
+
 
     @Test
     @DisplayName("Add a second order with a better price")
@@ -156,5 +154,27 @@ class OrderHandlerTest {
 
         assertEquals(expected, changedLevels);
     }
+
+    @Disabled
+    @Test
+    @DisplayName("Amend the second order quanity to be greater")
+    void testNine() {
+        Order order1 = new Order("1", 729.0, 100L, Side.BID);
+        Order order2 = new Order("2", 728.9, 50L, Side.BID);
+        // Same Level price as order 2
+        Order order3 = new Order("3", 728.9, 200L, Side.BID);
+        Order order2update = new Order("2", 728.9, 150L, Side.BID);
+
+        orderHandler.handleOrder(order1);
+        orderHandler.handleOrder(order2);
+        orderHandler.handleOrder(order3);
+
+        Map<String, Object> changedLevels = orderHandler.handleOrder(order2update);
+        Map<Object, Object> expected = new TreeMap<>();
+        expected.put(PriceFields.BID2, 728.9);
+        expected.put(PriceFields.BID_SIZE2, 350L);
+        assertEquals(expected, changedLevels);
+    }
+
 
 }
