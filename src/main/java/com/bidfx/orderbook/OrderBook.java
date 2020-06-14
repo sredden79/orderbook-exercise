@@ -6,7 +6,6 @@ package com.bidfx.orderbook;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
@@ -16,7 +15,7 @@ import java.util.TreeMap;
  *
  * @author BidFX Systems Limited
  */
-@SuppressWarnings("all")
+
 public class OrderBook {
 
     /**
@@ -155,10 +154,6 @@ public class OrderBook {
      * @return The updated delta variable
      */
     public Map<String, Object> getChangedLevels() {
-        // TODO Auto-generated method stub
-
         return updateDelta;
     }
-
-    // TODO Implement your custom logic here
 }
