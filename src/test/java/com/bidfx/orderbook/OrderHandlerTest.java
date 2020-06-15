@@ -120,6 +120,7 @@ class OrderHandlerTest {
         assertEquals(1,orderHandler.currentActiveOrderCount());
     }
 
+    @Tag(TestStatusTags.WAITING_REQUIREMENTS)
     @Test
     @DisplayName("Removing the last order from the best price level")
     void testSeven() {
