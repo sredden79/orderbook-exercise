@@ -5,8 +5,7 @@
 package com.bidfx.orderbook;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
 
 /**
  * Represents an order coming in from a remote price source. This order can be
@@ -17,41 +16,46 @@ import java.util.Map;
 
 public class Order {
     private final String orderId;
-    private final double price;
-    private final long size;
     private final Side side;
 
+    private String price;
+    private long size;
     private long executedSize =0;
-    private static long ID_COUNTER = 0;
-    private final long id;
+    private static long idCounter = 0;
 
 
-    Order(String orderId, double price, long size, Side side) {
-        this.orderId = orderId;
+    Order(String price, long size, Side side) {
+        this.orderId = Long.toString(this.getNextID());
         this.price = price;
         this.size = size;
         this.side = side;
+    }
 
-        this.id = getNextID();
+    Order(String orderId, double price, long size, Side side) {
+        this.orderId = orderId;
+        this.size = size;
+        this.side = side;
+
+        // Converted price to string for better memory management
+        this.price = Double.toString(price);;
     }
 
     private synchronized long getNextID()
     {
-        return ++ID_COUNTER;
+        return ++idCounter;
     }
-
 
     public String getOrderId() {
         return orderId;
     }
 
-    public long getGeneratedID()
+    public String getSPrice()
     {
-        return id;
+        return price;
     }
 
     public double getPrice() {
-        return price;
+        return Double.valueOf(price);
     }
 
     public long getSize() {
@@ -77,4 +81,8 @@ public class Order {
     }
 
 
+    public void updateOrder(Order currentOrderDetails) {
+        this.price = currentOrderDetails.price;
+        this.size = currentOrderDetails.size;
+    }
 }
