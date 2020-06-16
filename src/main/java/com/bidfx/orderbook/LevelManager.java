@@ -1,6 +1,7 @@
 package com.bidfx.orderbook;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class LevelManager {
@@ -14,8 +15,9 @@ public class LevelManager {
 
     public static Map<String, Object> updateOrderBookWith(Order newOrderDetails)
     {
+        Map<String, Object> changesForOrderUpdate = new HashMap<String, Object>();
 
-        Level currentOrderLevel = priceLevelMap.getOrDefault(newOrderDetails.getSPrice(),
+        Level priceOrderLevel = priceLevelMap.getOrDefault(newOrderDetails.getSPrice(),
                 new Level(newOrderDetails.getSPrice()));
 
         Order liveOrderDetails = null;
@@ -23,8 +25,8 @@ public class LevelManager {
         {
             liveOrderDetails = ActiveOrders.get(newOrderDetails.getOrderId());
             Level liveLevelForOrder = liveOrderLevelMap.get(liveOrderDetails);
-            if (currentOrderLevel != liveLevelForOrder) {
-                liveLevelForOrder.removeOrder(liveOrderDetails);
+            if (priceOrderLevel != liveLevelForOrder) {
+                changesForOrderUpdate.putAll(liveLevelForOrder.removeOrder(liveOrderDetails));
             }
             //TODO : Need to think about when to update the existing order details
             // because you might need to use the differences to know whats changed
@@ -35,10 +37,10 @@ public class LevelManager {
         else
         {
             ActiveOrders.put(newOrderDetails.getOrderId(),liveOrderDetails);
+            liveOrderLevelMap.put(newOrderDetails,priceOrderLevel);
         }
 
-        liveOrderDetails = currentOrderLevel.addOrUpdateOrder(liveOrderDetails,newOrderDetails);
-
+        priceOrderLevel.addOrUpdateOrder(liveOrderDetails,newOrderDetails);
 
         return null;
 

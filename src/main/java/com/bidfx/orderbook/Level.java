@@ -5,22 +5,62 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class Level {
+
+    private Side currentlevelSide;
+    private final String SIZE_TAG = "_SIZE";
 
     // orders to be filled from position 0;
     private List<Order> orderMatchingOrder = new ArrayList<>();
     public final String pricePoint;
-    private long totalRemainingSize;
+    private long totalRemainingSize=0;
+    private int levelNumber =0;
+
+    private Map<String, Object> changesToLevel;
 
     Level(String pricePoint) {
+
         this.pricePoint = pricePoint;
+        // TODO : Think about determining dynamically based on remaining size
+        // ie BID = - size, ASK = + size
+        currentlevelSide = Side.BID;
     }
 
     /**
      * TODO : Write Java Doc for previousOrderDetails
-     * @param previousOrderDetails
+     * @param orderToRemove
      */
-    public void removeOrder(Order previousOrderDetails) {
+    public synchronized  Map<String, Object> removeOrder(Order orderToRemove) {
+
+        changesToLevel = new HashMap<>();
+
+        if (orderMatchingOrder.contains(orderToRemove))
+        {
+            orderMatchingOrder.remove(orderToRemove);
+        }
+        else
+        {
+            return changesToLevel;
+        }
+
+        long updatedRemainingSize = totalRemainingSize - orderToRemove.getRemainingSize();
+
+        if (updatedRemainingSize > 0)
+        {
+            changesToLevel.put(currentlevelSide+SIZE_TAG+levelNumber,updatedRemainingSize);
+        }
+
+        if (updatedRemainingSize == 0)
+        {
+            changesToLevel.put(currentlevelSide.toString()+levelNumber,null);
+            changesToLevel.put(currentlevelSide+SIZE_TAG+levelNumber,null);
+        }
+
+        totalRemainingSize = updatedRemainingSize;
+
+        return changesToLevel;
+
     }
 
 
@@ -31,7 +71,7 @@ public class Level {
      * @param currentOrderDetails
      * @return the updated Order
      */
-    public Order addOrUpdateOrder(Order liveOrderDetails, Order currentOrderDetails) {
+    public Map<String, Object> addOrUpdateOrder(Order liveOrderDetails, Order currentOrderDetails) {
         Order processingOrder = null;
 
         if (currentOrderDetails != null)
@@ -49,7 +89,7 @@ public class Level {
 
         // TODO : ? Processing
 
-        return processingOrder;
+        return null;
     }
 
     // Might use for determining what the current level is for
